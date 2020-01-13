@@ -18,10 +18,6 @@
     "url": "git@github.com:kingller/theme-color-webpack-plugin.git"
   },
   "license": "ISC",
-  "author": {
-    "name": "G-Grant",
-    "url": "https://github.com/G-Grant"
-  },
   "files": [
     "index.js"
   ],
@@ -31,6 +27,6 @@
   },
   "dependencies": {
     "chalk": "^3.0.0",
-    "theme-color-generator": "^1.3.0"
+    "theme-color-generator": "^1.3.2"
   }
 }

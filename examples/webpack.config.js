@@ -1,6 +1,7 @@
 const path = require('path');
 
 const webpack = require('webpack');
+const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -11,7 +12,7 @@ const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const ThemeColorWebpackPlugin = require('../index');
 const args = require('node-args');
 
-const target = `${__dirname}/dist`;
+const TARGET = `${__dirname}/dist`;
 
 const ROOT_PATH = require('path').resolve(__dirname);
 
@@ -23,7 +24,7 @@ let config = {
     entry: {},
     stats: 'errors-warnings',
     output: {
-        path: target,
+        path: TARGET,
         filename: '[name].[hash:8].js',
     },
     module: {
@@ -89,6 +90,12 @@ let config = {
         },
     },
     plugins: [
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: '[name].css',
+            chunkFilename: '[name].[contenthash:8].css' // use contenthash *
+        }),
         new ThemeColorWebpackPlugin({
             stylesDir: path.join(__dirname, './src/styles'),
             varFile: path.join(__dirname, './src/styles/vars.less'),
@@ -105,6 +112,7 @@ function addEntries() {
             filename: `${page.name}.html`,
             template: `${ROOT_PATH}/template.ejs`,
             chunks: ['manifest', 'vendor', page.name],
+            favicon: 'src/images/favicon.ico',
             name: page.name,
             title: page.title,
         });

@@ -11,10 +11,10 @@ function addCSS(cssText) {
         let head = document.head || document.getElementsByTagName('head')[0]; //获取head元素
         styleEl.type = 'text/css'; //这里必须显示设置style元素的type属性为text/css，否则在ie中不起作用
         styleEl.setAttribute('id', id);
-        style.innerHTML = cssText;
+        styleEl.innerHTML = cssText;
         head.appendChild(styleEl); //把创建的style元素插入到head中
     } else {
-        style.innerHTML = cssText;
+        styleEl.innerHTML = cssText;
     }
 }
 

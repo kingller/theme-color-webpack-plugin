@@ -1,3 +1,5 @@
+'use strict';
+
 const chalk = require('chalk');
 const { generateTheme } = require('theme-color-generator');
 const PLUGIN_NAME = "ThemeColorWebpackPlugin";
