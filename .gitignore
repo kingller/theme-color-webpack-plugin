@@ -4,3 +4,5 @@ node_modules/
 npm-debug.log
 .vscode/
 package-lock.json
+/example/dest/
+/example/dist/

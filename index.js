@@ -1,7 +1,9 @@
 const chalk = require('chalk');
 const { generateTheme } = require('theme-color-generator');
+const PLUGIN_NAME = "ThemeColorWebpackPlugin";
+const success = msg => console.log(chalk.green(`[${PLUGIN_NAME}] ${msg}`));
 
-class GenerateTheme {
+class ThemeColorWebpackPlugin {
     constructor(options) {
         this.options = options;
         this.isInitLoad = true;
@@ -12,7 +14,7 @@ class GenerateTheme {
             if (this.isInitLoad) {
                 this.isInitLoad = false;
                 generateTheme(this.options).then(() => {
-                    console.log(chalk.green('生成主题色成功'));
+                    success('生成主题色成功');
                     callback();
                 });
             } else {
@@ -23,7 +25,7 @@ class GenerateTheme {
             if (this.isInitLoad) {
                 this.isInitLoad = false;
                 generateTheme(this.options).then(() => {
-                    console.log(chalk.green('生成主题色成功'));
+                    success('生成主题色成功');
                     callback();
                 });
             } else {
@@ -33,4 +35,4 @@ class GenerateTheme {
     }
 }
 
-module.exports = GenerateTheme;
+module.exports = ThemeColorWebpackPlugin;
