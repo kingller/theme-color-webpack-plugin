@@ -9,7 +9,7 @@ const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const OpenBrowserPlugin = require('open-browser-webpack-plugin');
-const ThemeColorWebpackPlugin = require('../index');
+const ThemeColorWebpackPlugin = require('theme-color-webpack-plugin');
 const args = require('node-args');
 
 const TARGET = `${__dirname}/dist`;
