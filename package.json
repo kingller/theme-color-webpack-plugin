@@ -17,7 +17,7 @@
     "type": "git",
     "url": "git@github.com:kingller/theme-color-webpack-plugin.git"
   },
-  "license": "ISC",
+  "license": "MIT",
   "files": [
     "index.js"
   ],
