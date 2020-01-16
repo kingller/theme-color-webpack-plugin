@@ -8,7 +8,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const ThemeColorWebpackPlugin = require('theme-color-webpack-plugin');
 const args = require('node-args');
 
@@ -140,13 +139,17 @@ switch (mode) {
 
     case 'development':
         config = merge(config, {
-            plugins: [new OpenBrowserPlugin({ url: `http://localhost:${port}` })],
             devServer: {
                 host: '0.0.0.0',
-                port: port, //和package.json中配置的port作用一致
-                contentBase: '../',
+                port: port,
+                open: true,
+                openPage: 'index',
                 hot: true,
-                disableHostCheck: true
+                disableHostCheck: true,
+                useLocalIp: true,
+                proxy: {
+                    '/index'  : {target: `http://localhost:${port}/`, pathRewrite: {'$':'.html'}},
+                }
             },
             devtool: '#source-map'
         });

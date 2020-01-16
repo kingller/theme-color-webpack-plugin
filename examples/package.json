@@ -46,7 +46,6 @@
     "less-plugin-autoprefix": "^2.0.0",
     "mini-css-extract-plugin": "^0.8.0",
     "node-args": "^2.1.8",
-    "open-browser-webpack-plugin": "0.0.5",
     "optimize-css-assets-webpack-plugin": "5.0.3",
     "raw-loader": "^0.5.1",
     "react": "^16.12.0",
