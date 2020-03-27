@@ -6,5 +6,9 @@
 <font color=red><strong>删除</strong></font>
 
 
+# 1.0.2
+1. <font color=red>修复</font> 添加`lodash`至`dependencies`
+
+
 # 1.0.1
 1. <font color=red>修复</font> 实时生成主题色文件
