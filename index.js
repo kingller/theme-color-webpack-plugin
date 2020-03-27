@@ -2,39 +2,40 @@
 
 const chalk = require('chalk');
 const { generateTheme } = require('theme-color-generator');
-const PLUGIN_NAME = "ThemeColorWebpackPlugin";
-const success = msg => console.log(chalk.green(`[${PLUGIN_NAME}] ${msg}`));
+const fs = require('fs');
+const path = require('path');
+const _ = require('lodash');
 
-class ThemeColorWebpackPlugin {
+class GenerateTheme {
     constructor(options) {
         this.options = options;
-        this.isInitLoad = true;
     }
 
     apply(compiler) {
         compiler.hooks.watchRun.tapAsync('GenerateTheme', (err, callback) => {
-            if (this.isInitLoad) {
-                this.isInitLoad = false;
-                generateTheme(this.options).then(() => {
-                    success('生成主题色成功');
-                    callback();
-                });
-            } else {
-                callback();
+            const { outputFilePath } = this.options;
+            const outputDir = path.basename(outputFilePath);
+            if (!fs.existsSync(outputDir)) {
+                fs.mkdirSync(outputDir);
             }
+            const isExistCSSFile = fs.existsSync(outputFilePath);
+            generateTheme(_.omit(this.options, 'outputFilePath')).then(css => {
+                if (isExistCSSFile && css === fs.readFileSync(outputFilePath, 'utf-8')) {
+                    console.log(chalk.red('不需要生成 css 文件'));
+                } else {
+                    console.log(chalk.green('生成主题色成功'));
+                    fs.writeFileSync(outputFilePath, css);
+                }
+                callback();
+            });
         });
         compiler.hooks.beforeRun.tapAsync('GenerateTheme', (err, callback) => {
-            if (this.isInitLoad) {
-                this.isInitLoad = false;
-                generateTheme(this.options).then(() => {
-                    success('生成主题色成功');
-                    callback();
-                });
-            } else {
+            generateTheme(this.options).then(() => {
+                console.log(chalk.green('生成主题色成功'));
                 callback();
-            }
+            });
         });
     }
 }
 
-module.exports = ThemeColorWebpackPlugin;
+module.exports = GenerateTheme;
