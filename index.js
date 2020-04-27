@@ -14,7 +14,7 @@ class GenerateTheme {
     apply(compiler) {
         compiler.hooks.watchRun.tapAsync('GenerateTheme', (err, callback) => {
             const { outputFilePath } = this.options;
-            const outputDir = path.basename(outputFilePath);
+            const outputDir = path.dirname(outputFilePath);
             if (!fs.existsSync(outputDir)) {
                 fs.mkdirSync(outputDir);
             }
