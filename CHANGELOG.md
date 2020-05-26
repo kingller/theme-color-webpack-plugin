@@ -6,6 +6,9 @@
 <font color=red><strong>删除</strong></font>
 
 
+# 1.0.4
+1. <font color=red>修复</font> 文件不变，不需要重新生成时，去除提示
+
 
 # 1.0.3
 1. <font color=red>修复</font> 生成路径从`path.basename`改为`path.dirname`

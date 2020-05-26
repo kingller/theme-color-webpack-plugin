@@ -20,9 +20,7 @@ class GenerateTheme {
             }
             const isExistCSSFile = fs.existsSync(outputFilePath);
             generateTheme(_.omit(this.options, 'outputFilePath')).then(css => {
-                if (isExistCSSFile && css === fs.readFileSync(outputFilePath, 'utf-8')) {
-                    console.log(chalk.red('不需要生成 css 文件'));
-                } else {
+                if (!isExistCSSFile || css !== fs.readFileSync(outputFilePath, 'utf-8')) {
                     console.log(chalk.green('生成主题色成功'));
                     fs.writeFileSync(outputFilePath, css);
                 }
