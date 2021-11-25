@@ -12,8 +12,29 @@ class GenerateTheme {
     }
 
     apply(compiler) {
-        compiler.hooks.watchRun.tapAsync('GenerateTheme', (err, callback) => {
-            const { outputFilePath } = this.options;
+        const { themeVariables, outputFilePath } = this.options;
+        compiler.hooks.watchRun.tapAsync('GenerateTheme', ({ watchFileSystem }, callback) => {
+            const updateFiles = Object.keys(watchFileSystem.watcher.mtimes);
+            // 取出更改的 less 文件
+            const lessFiles = _.filter(updateFiles, (updateFile) => {
+                return path.extname(updateFile) === '.less';
+            });
+            if (!lessFiles.length) {
+                callback();
+                return;
+            }
+            // 文件中是否使用主题色变量
+            const hasThemeVariablesFiles = _.filter(lessFiles, (lessFile) => {
+                const content = fs.readFileSync(lessFile, 'utf-8');
+                const usedThemeVariables = _.filter(themeVariables, (themeVariable) => {
+                    return content.includes(themeVariable);
+                });
+                return usedThemeVariables.length;
+            });
+            if (!hasThemeVariablesFiles.length) {
+                callback();
+                return;
+            }
             const outputDir = path.dirname(outputFilePath);
             if (!fs.existsSync(outputDir)) {
                 fs.mkdirSync(outputDir);
