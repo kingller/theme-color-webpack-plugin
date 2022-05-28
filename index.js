@@ -13,12 +13,21 @@ class GenerateTheme {
 
     apply(compiler) {
         const { themeVariables, outputFilePath } = this.options;
-        compiler.hooks.watchRun.tapAsync('GenerateTheme', ({ watchFileSystem }, callback) => {
-            const updateFiles = Object.keys(watchFileSystem.watcher.mtimes);
+        compiler.hooks.afterEnvironment.tap('GenerateTheme', (err) => {
+            generateTheme(this.options).then(() => console.log(chalk.green('afterEnvironment 生成主题色成功')));
+        });
+        compiler.hooks.watchRun.tapAsync('GenerateTheme', ({modifiedFiles}, callback) => {
+            if (!modifiedFiles || !modifiedFiles.size) {
+                callback();
+                return;
+            }
             // 取出更改的 less 文件
-            const lessFiles = _.filter(updateFiles, (updateFile) => {
-                return path.extname(updateFile) === '.less';
-            });
+            const lessFiles = [];
+            modifiedFiles.forEach(function (updateFile) {
+                if (path.extname(updateFile) === '.less') {
+                    lessFiles.push(updateFile);
+                }
+            })
             if (!lessFiles.length) {
                 callback();
                 return;
@@ -45,12 +54,6 @@ class GenerateTheme {
                     console.log(chalk.green('生成主题色成功'));
                     fs.writeFileSync(outputFilePath, css);
                 }
-                callback();
-            });
-        });
-        compiler.hooks.beforeRun.tapAsync('GenerateTheme', (err, callback) => {
-            generateTheme(this.options).then(() => {
-                console.log(chalk.green('生成主题色成功'));
                 callback();
             });
         });

@@ -6,6 +6,10 @@
 <font color=red><strong>删除</strong></font>
 
 
+# 2.0.0
+1. <font color=blue>增强</font> 支持webpack 5
+
+
 # 1.1.0
 1. <font color=blue>增强</font> 优化编译性能
 
