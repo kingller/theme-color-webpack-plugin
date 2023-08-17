@@ -5,6 +5,7 @@ const { generateTheme } = require('theme-color-generator');
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
+const lessToJs = require('less-vars-to-js');
 
 class GenerateTheme {
     constructor(options) {
@@ -12,11 +13,13 @@ class GenerateTheme {
     }
 
     apply(compiler) {
-        const { themeVariables, outputFilePath } = this.options;
+        const { themeVariables, outputFilePath, varFile, globalVarFile } = this.options;
         compiler.hooks.afterEnvironment.tap('GenerateTheme', (err) => {
-            generateTheme(this.options).then(() => console.log(chalk.green('afterEnvironment 生成主题色成功')));
+            generateTheme({ findMissVar: true, ...this.options }).then(() =>
+                console.log(chalk.green('afterEnvironment 生成主题色成功'))
+            );
         });
-        compiler.hooks.watchRun.tapAsync('GenerateTheme', ({modifiedFiles}, callback) => {
+        compiler.hooks.watchRun.tapAsync('GenerateTheme', ({ modifiedFiles }, callback) => {
             if (!modifiedFiles || !modifiedFiles.size) {
                 callback();
                 return;
@@ -27,20 +30,33 @@ class GenerateTheme {
                 if (path.extname(updateFile) === '.less') {
                     lessFiles.push(updateFile);
                 }
-            })
+            });
             if (!lessFiles.length) {
                 callback();
                 return;
             }
+            const themeVars = themeVariables || [];
+            if (!themeVariables && varFile) {
+                const varsJs = lessToJs(fs.readFileSync(varFile, 'utf-8'));
+                Object.keys(varsJs).forEach((varName) => {
+                    themeVars.push(varName);
+                });
+            }
             // 文件中是否使用主题色变量
-            const hasThemeVariablesFiles = _.filter(lessFiles, (lessFile) => {
+            const hasThemeVariablesFiles = _.some(lessFiles, (lessFile) => {
                 const content = fs.readFileSync(lessFile, 'utf-8');
-                const usedThemeVariables = _.filter(themeVariables, (themeVariable) => {
+                if (globalVarFile) {
+                    // 传入 globalVarFile 的，使用了 var(--primary-\d+) 的匹配主题色
+                    if (/var\(--primary-\d+\)/.test(content)) {
+                        return true;
+                    }
+                }
+                const usedThemeVariables = _.some(themeVars, (themeVariable) => {
                     return content.includes(themeVariable);
                 });
-                return usedThemeVariables.length;
+                return usedThemeVariables;
             });
-            if (!hasThemeVariablesFiles.length) {
+            if (!hasThemeVariablesFiles) {
                 callback();
                 return;
             }
@@ -49,7 +65,7 @@ class GenerateTheme {
                 fs.mkdirSync(outputDir);
             }
             const isExistCSSFile = fs.existsSync(outputFilePath);
-            generateTheme(_.omit(this.options, 'outputFilePath')).then(css => {
+            generateTheme({ findMissVar: true, ..._.omit(this.options, 'outputFilePath') }).then((css) => {
                 if (!isExistCSSFile || css !== fs.readFileSync(outputFilePath, 'utf-8')) {
                     console.log(chalk.green('生成主题色成功'));
                     fs.writeFileSync(outputFilePath, css);
