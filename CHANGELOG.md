@@ -6,6 +6,10 @@
 <font color=red><strong>删除</strong></font>
 
 
+# 3.1.0
+1. <font color=orange>修改</font> 判断是否含有主题色变量改为 `/var\(--primary-[\w-]+\)/`
+
+
 # 3.0.1
 1. <font color=red>修复</font> 编译错误 Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: chalk
 ```

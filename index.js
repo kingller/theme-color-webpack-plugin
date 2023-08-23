@@ -46,8 +46,8 @@ class GenerateTheme {
             const hasThemeVariablesFiles = _.some(lessFiles, (lessFile) => {
                 const content = fs.readFileSync(lessFile, 'utf-8');
                 if (globalVarFile) {
-                    // 传入 globalVarFile 的，使用了 var(--primary-\d+) 的匹配主题色
-                    if (/var\(--primary-\d+\)/.test(content)) {
+                    // 传入 globalVarFile 的，使用了 var(--primary-[\w-]+) 的匹配主题色
+                    if (/var\(--primary-[\w-]+\)/.test(content)) {
                         return true;
                     }
                 }
