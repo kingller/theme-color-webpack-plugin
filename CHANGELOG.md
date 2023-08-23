@@ -6,6 +6,10 @@
 <font color=red><strong>删除</strong></font>
 
 
+# 3.2.0
+1. <font color=orange>修改</font> 升级 `theme-color-generator` 至 `2.2.0`，`globalVarFileThemeRegex` 匹配主题色变量默认值改为 `/@primary-/`
+
+
 # 3.1.0
 1. <font color=orange>修改</font> 判断是否含有主题色变量改为 `/var\(--primary-[\w-]+\)/`
 
